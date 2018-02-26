@@ -25,16 +25,35 @@ public class MoviesDBNetworkUtils {
     public static final String API_PARAM = "api_key";
 
 
-    public static URL buildImageUrl(String movieId){
+    public static URL buildImageUrl(String imageId){
 
         try {
-            String jsonWeatherResponse = getResponseFromHttpUrl(buildConfigurationUrl());
+            String configurationResponse = getResponseFromHttpUrl(buildConfigurationUrl());
+            System.out.println(configurationResponse);
 
-            System.out.println(jsonWeatherResponse);
+            String[] imagesUrls = JsonUtils.getImageUrls(configurationResponse);
+            if((imagesUrls == null) || imagesUrls.length != 2)
+                return null;
+
+            Uri builtUri = Uri.parse(new StringBuffer(imagesUrls[0]).append(imagesUrls[1]).append("/").append("kqjL17yufvn9OVLyXYpvtyrFfak.jpg").toString()).buildUpon()
+                    .build();
+
+            URL url = null;
+            try {
+                url = new URL(builtUri.toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            Log.v(TAG, "Built URI for Images " + url);
+
+            return url;
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
         return null;
     }
@@ -51,7 +70,7 @@ public class MoviesDBNetworkUtils {
             e.printStackTrace();
         }
 
-        Log.v(TAG, "Built URI " + url);
+        Log.v(TAG, "Built URI for configuration" + url);
 
         return url;
 

@@ -3,8 +3,12 @@ package com.udacity.kechagiaskonstantinos.popularmoviesapp;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.Utilities.MoviesDBNetworkUtils;
+
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,11 +32,18 @@ public class MainActivity extends AppCompatActivity {
             if(params.length == 0)
                 return null;
 
-            String movieId = params[0];
+            String imageId = params[0];
 
-            MoviesDBNetworkUtils.buildImageUrl(movieId);
+            URL imageUrl = MoviesDBNetworkUtils.buildImageUrl(imageId);
 
-            return null;
+            return imageUrl.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String imageUrl) {
+            ImageView imageView = findViewById(R.id.imageView);
+
+            Picasso.with(getBaseContext()).load(imageUrl).into(imageView);
         }
     }
 }
