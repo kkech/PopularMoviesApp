@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 
 import static android.support.v7.widget.RecyclerView.ViewHolder;
 
@@ -19,14 +20,12 @@ import static android.support.v7.widget.RecyclerView.ViewHolder;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder> {
 
     private ItemClickListener mClickListener;
-
-    private String[] mMoviesData;
-
+    private Movie[] mMoviesData;
     private Context context;
 
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
-        void onItemClick(String movieId);
+        void onItemClick(Movie movie);
     }
 
     public MoviesAdapter(Context context, ItemClickListener mClickListener){
@@ -46,8 +45,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     @Override
     public void onBindViewHolder(@NonNull final MoviesAdapterViewHolder holder, int position) {
-        String movie = mMoviesData[position];
-        Picasso.with(context).load(movie).resize(holder.mMovieImageView.getWidth(),800).into(holder.mMovieImageView);
+        Movie movie = mMoviesData[position];
+        Picasso.with(context).load(movie.getPosterPath()).resize(holder.mMovieImageView.getWidth(),800).into(holder.mMovieImageView);
 
     }
 
@@ -57,7 +56,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         return mMoviesData.length;
     }
 
-    public void setMoviesData(String[] moviesData) {
+    public void setMoviesData(Movie[] moviesData) {
         this.mMoviesData = moviesData;
         notifyDataSetChanged();
     }

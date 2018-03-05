@@ -1,10 +1,12 @@
 package com.udacity.kechagiaskonstantinos.popularmoviesapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.StringDef;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,11 +18,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.Utilities.MoviesDBNetworkUtils;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.net.URL;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.ItemClickListener{
 
@@ -30,13 +31,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
     private RecyclerView mRecyclerView;
 
     private TextView mErrorMessageDisplay;
-
     private ProgressBar mLoadingIndicator;
-
 
     public static final String POPULAR = "Popular";
     public static final String RATE = "Rate";
-
 
     @StringDef({POPULAR, RATE})
     @Retention(RetentionPolicy.SOURCE)
@@ -48,47 +46,24 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-         * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
-         * do things like set the adapter of the RecyclerView and toggle the visibility.
-         */
         mRecyclerView = findViewById(R.id.rv_movies);
-
 
         GridLayoutManager layoutManager
                 = new GridLayoutManager(this,2);
 
         mRecyclerView.setLayoutManager(layoutManager);
-
-        /*
-         * Use this setting to improve performance if you know that changes in content do not
-         * change the child layout size in the RecyclerView
-         */
         mRecyclerView.setHasFixedSize(true);
-
         mRecyclerView.addItemDecoration(new SpacesItemDecoration(10));
-
-
-        // COMPLETED (11) Pass in 'this' as the ForecastAdapterOnClickHandler
-        /*
-         * The ForecastAdapter is responsible for linking our weather data with the Views that
-         * will end up displaying our weather data.
-         */
         mMoviesAdapter = new MoviesAdapter(this,this);
-
-        /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mMoviesAdapter);
-
-        /* This TextView is used to display errors and will be hidden if there are no errors */
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
-
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
         loadMovieData(POPULAR);
     }
 
     private void loadMovieData(@MovieSort String movieSort) {
-        showWeatherDataView();
+        showMovieDataView();
         if(movieSort.equals(POPULAR))
             new FetchMoviesData().execute(POPULAR);
         else
@@ -96,13 +71,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
     }
 
     /**
-     * This method will make the View for the weather data visible and
+     * This method will make the View for the movie data visible and
      * hide the error message.
      * <p>
      * Since it is okay to redundantly set the visibility of a View, we don't
      * need to check whether each view is currently visible or invisible.
      */
-    private void showWeatherDataView() {
+    private void showMovieDataView() {
         /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the weather data is visible */
@@ -124,8 +99,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
     }
 
     @Override
-    public void onItemClick(String movieId) {
-        Log.i(TAG,movieId);
+    public void onItemClick(Movie movie) {
+        Log.i(TAG,movie.getMovieId().toString());
+
+        Context context = this;
+        Class destinationClass = DetailActivity.class;
+        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+        intentToStartDetailActivity.putExtra("Movie", movie);
+        startActivity(intentToStartDetailActivity);
     }
 
     @Override
@@ -155,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchMoviesData extends AsyncTask<String, Void, String[]> {
+    public class FetchMoviesData extends AsyncTask<String, Void, Movie[]> {
 
         @Override
         protected void onPreExecute() {
@@ -164,34 +145,26 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
         }
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected Movie[] doInBackground(String... params) {
             if(params.length == 0)
                 showErrorMessage();
 
-            String[] imagesURLs;
+            Movie[] mMovies;
             if(params[0].equals(POPULAR))
-                imagesURLs = MoviesDBNetworkUtils.buildImageUrls(POPULAR);
+                mMovies = MoviesDBNetworkUtils.getMovies(POPULAR);
             else
-                imagesURLs = MoviesDBNetworkUtils.buildImageUrls(RATE);
-            ArrayList<String> imagesURLsArray = new ArrayList<String>();
-            for (String imageURlString: imagesURLs) {
-                URL imageUrl = MoviesDBNetworkUtils.buildImageUrl(imageURlString);
-                if(imageUrl != null)
-                    imagesURLsArray.add(imageUrl.toString());
-                else
-                    showErrorMessage();
-            }
+                mMovies = MoviesDBNetworkUtils.getMovies(RATE);
 
-            return imagesURLsArray.toArray(new String[0]);
+            return mMovies;
         }
 
         @Override
-        protected void onPostExecute(String[] imageUrls) {
+        protected void onPostExecute(Movie[] imageUrls) {
 
             mLoadingIndicator.setVisibility(View.INVISIBLE);
 
             if (imageUrls != null) {
-                showWeatherDataView();
+                showMovieDataView();
                 mMoviesAdapter.setMoviesData(imageUrls);
             }else
                 showErrorMessage();

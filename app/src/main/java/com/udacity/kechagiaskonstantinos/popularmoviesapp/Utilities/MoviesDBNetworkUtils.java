@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,22 +25,19 @@ public class MoviesDBNetworkUtils {
     private static final String TAG = MoviesDBNetworkUtils.class.getSimpleName();
 
     private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
-
     private static final String API_PARAM = "api_key";
     private static final String LANG_PARAM = "language";
     private static final String SORT_PARAM = "sort_by";
     private static final String PAGE_PARAM = "page";
 
-    public static String[] buildImageUrls(@MainActivity.MovieSort String movieSort){
+    public static Movie[] getMovies(@MainActivity.MovieSort String movieSort){
         try {
             String movieResponse = getResponseFromHttpUrl(buildMovieUrl(movieSort));
             System.out.println(movieResponse);
-            return JsonUtils.getImageRelativeURLs(movieResponse);
+            return JsonUtils.getMoviesFromJSON(movieResponse);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         return null;
     }
 
@@ -70,7 +68,7 @@ public class MoviesDBNetworkUtils {
         return url;
     }
 
-    public static URL buildImageUrl(String imageId){
+    public static URL buildImageUrl(String imagePath){
 
         try {
             String configurationResponse = getResponseFromHttpUrl(buildConfigurationUrl());
@@ -80,7 +78,7 @@ public class MoviesDBNetworkUtils {
             if((imagesUrls == null) || imagesUrls.length != 2)
                 return null;
 
-            Uri builtUri = Uri.parse(new StringBuffer(imagesUrls[0]).append(imagesUrls[1]).append(imageId).toString()).buildUpon()
+            Uri builtUri = Uri.parse(new StringBuffer(imagesUrls[0]).append(imagesUrls[1]).append(imagePath).toString()).buildUpon()
                     .build();
 
             URL url = null;
@@ -89,14 +87,9 @@ public class MoviesDBNetworkUtils {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-
             Log.v(TAG, "Built URI for Images " + url);
 
             return url;
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,12 +107,9 @@ public class MoviesDBNetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
         Log.v(TAG, "Built URI for configuration" + url);
 
         return url;
-
-
     }
 
     /**

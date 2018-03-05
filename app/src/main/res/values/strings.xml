@@ -4,5 +4,7 @@
     <string name="movie_img_content_description">Movie image</string>
     <string name="menu_popular">Popular</string>
     <string name="menu_rate">Rate</string>
-
+    <string name="tv_description_label">Description</string>
+    <string name="tv_release_date_label">Release Date</string>
+    <string name="tv_rating_label">Rating</string>
 </resources>
