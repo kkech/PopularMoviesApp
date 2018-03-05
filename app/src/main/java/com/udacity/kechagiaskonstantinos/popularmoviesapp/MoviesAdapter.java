@@ -1,6 +1,7 @@
 package com.udacity.kechagiaskonstantinos.popularmoviesapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
+
+import java.io.IOException;
 
 import static android.support.v7.widget.RecyclerView.ViewHolder;
 
@@ -46,7 +49,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     @Override
     public void onBindViewHolder(@NonNull final MoviesAdapterViewHolder holder, int position) {
         Movie movie = mMoviesData[position];
-        Picasso.with(context).load(movie.getPosterPath()).resize(holder.mMovieImageView.getWidth(),800).into(holder.mMovieImageView);
+        Picasso.with(context).load(movie.getPosterPath()).into(holder.mMovieImageView);
+
+
 
     }
 

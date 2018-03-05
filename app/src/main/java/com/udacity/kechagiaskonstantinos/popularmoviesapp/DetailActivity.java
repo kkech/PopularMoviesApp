@@ -45,9 +45,9 @@ public class DetailActivity extends AppCompatActivity {
 
                 tvTitleValue.setText(mMovie.getTitle());
                 tvDescValue.setText(mMovie.getPlotSynopsis());
-                SimpleDateFormat sdf = new SimpleDateFormat("YYYY MM dd");
 
-                tvReleaseDateValue.setText(sdf.format(mMovie.getReleaseDate()));
+                if(mMovie.getReleaseDate() != null)
+                    tvReleaseDateValue.setText(mMovie.getReleaseDate().toString());
                 rbRating.setRating(((Double)(mMovie.getVoteAverage()/2.0)).floatValue());
                 Picasso.with(getApplicationContext()).load(mMovie.getPosterPath()).into(ivPoster);
             }
