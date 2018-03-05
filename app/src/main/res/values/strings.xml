@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Popular Movies App</string>
+    <string name="error_message">An error has occurred. Please try again</string>
+    <string name="movie_img_content_description">Movie image</string>
+    <string name="menu_popular">Popular</string>
+    <string name="menu_rate">Rate</string>
+
 </resources>

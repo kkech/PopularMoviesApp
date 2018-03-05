@@ -3,12 +3,16 @@ package com.udacity.kechagiaskonstantinos.popularmoviesapp.Utilities;
 import android.net.Uri;
 import android.util.Log;
 
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+
+import static com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity.POPULAR;
 
 /**
  * Created by kechagiaskonstantinos on 26/02/2018.
@@ -19,11 +23,52 @@ public class MoviesDBNetworkUtils {
 
     private static final String TAG = MoviesDBNetworkUtils.class.getSimpleName();
 
-    public static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
-    public static String IMAGE_BASE_URL;
+    private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
 
-    public static final String API_PARAM = "api_key";
+    private static final String API_PARAM = "api_key";
+    private static final String LANG_PARAM = "language";
+    private static final String SORT_PARAM = "sort_by";
+    private static final String PAGE_PARAM = "page";
 
+    public static String[] buildImageUrls(@MainActivity.MovieSort String movieSort){
+        try {
+            String movieResponse = getResponseFromHttpUrl(buildMovieUrl(movieSort));
+            System.out.println(movieResponse);
+            return JsonUtils.getImageRelativeURLs(movieResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return null;
+    }
+
+    private static URL buildMovieUrl(@MainActivity.MovieSort String movieSort){
+        Uri builtUri;
+        if(movieSort.equals(POPULAR))
+            builtUri = Uri.parse("https://api.themoviedb.org/3/discover/movie").buildUpon()
+                .appendQueryParameter(API_PARAM,"eb68acebf9644349b99549ab101d948c")
+                .appendQueryParameter(LANG_PARAM,"en-US")
+                .appendQueryParameter(SORT_PARAM,"popularity.desc")
+                .appendQueryParameter(PAGE_PARAM,"1")
+                .build();
+        else
+            builtUri = Uri.parse("https://api.themoviedb.org/3/discover/movie").buildUpon()
+                    .appendQueryParameter(API_PARAM,"eb68acebf9644349b99549ab101d948c")
+                    .appendQueryParameter(LANG_PARAM,"en-US")
+                    .appendQueryParameter(SORT_PARAM,"vote_average.desc")
+                    .appendQueryParameter(PAGE_PARAM,"1")
+                    .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
 
     public static URL buildImageUrl(String imageId){
 
@@ -31,11 +76,11 @@ public class MoviesDBNetworkUtils {
             String configurationResponse = getResponseFromHttpUrl(buildConfigurationUrl());
             System.out.println(configurationResponse);
 
-            String[] imagesUrls = JsonUtils.getImageUrls(configurationResponse);
+            String[] imagesUrls = JsonUtils.getImagePaths(configurationResponse);
             if((imagesUrls == null) || imagesUrls.length != 2)
                 return null;
 
-            Uri builtUri = Uri.parse(new StringBuffer(imagesUrls[0]).append(imagesUrls[1]).append("/").append("kqjL17yufvn9OVLyXYpvtyrFfak.jpg").toString()).buildUpon()
+            Uri builtUri = Uri.parse(new StringBuffer(imagesUrls[0]).append(imagesUrls[1]).append(imageId).toString()).buildUpon()
                     .build();
 
             URL url = null;
@@ -84,7 +129,7 @@ public class MoviesDBNetworkUtils {
      * @return The contents of the HTTP response.
      * @throws IOException Related to network and stream reading
      */
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
+    private static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream in = urlConnection.getInputStream();
