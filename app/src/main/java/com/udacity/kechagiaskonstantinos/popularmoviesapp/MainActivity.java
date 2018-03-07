@@ -1,15 +1,19 @@
 package com.udacity.kechagiaskonstantinos.popularmoviesapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,52 +26,60 @@ import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.ItemClickListener{
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.ItemClickListener, LoaderManager.LoaderCallbacks<ArrayList<Movie>>{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    @BindView(R.id.rv_movies) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
+    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
+
     private MoviesAdapter mMoviesAdapter;
-    private RecyclerView mRecyclerView;
 
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mLoadingIndicator;
-
+    private String movieSort = POPULAR;
     public static final String POPULAR = "Popular";
     public static final String RATE = "Rate";
+
+    public final Integer GRID_SPACING = 10;
+
+    private final int MOVIES_LOADER_ID = 100;
+
+
 
     @StringDef({POPULAR, RATE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MovieSort {
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = findViewById(R.id.rv_movies);
+        ButterKnife.bind(this);
 
         GridLayoutManager layoutManager
                 = new GridLayoutManager(this,2);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(10));
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(GRID_SPACING));
         mMoviesAdapter = new MoviesAdapter(this,this);
         mRecyclerView.setAdapter(mMoviesAdapter);
-        mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
-        mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
-        loadMovieData(POPULAR);
+        getSupportLoaderManager().initLoader(MOVIES_LOADER_ID,null,MainActivity.this);
     }
 
-    private void loadMovieData(@MovieSort String movieSort) {
+    private void loadMovieData() {
         showMovieDataView();
-        if(movieSort.equals(POPULAR))
-            new FetchMoviesData().execute(POPULAR);
-        else
-            new FetchMoviesData().execute(RATE);
+        getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
+
     }
 
     /**
@@ -124,50 +136,122 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
 
         if (id == R.id.sort_popular) {
             mMoviesAdapter.setMoviesData(null);
-            loadMovieData(POPULAR);
+            movieSort = POPULAR;
+            loadMovieData();
             return true;
         }else if(id == R.id.sort_rate){
             mMoviesAdapter.setMoviesData(null);
-            loadMovieData(RATE);
+            movieSort = RATE;
+            loadMovieData();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchMoviesData extends AsyncTask<String, Void, Movie[]> {
+//    public class FetchMoviesData extends AsyncTask<String, Void, Movie[]> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            mLoadingIndicator.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected Movie[] doInBackground(String... params) {
+//
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Movie[] imageUrls) {
+//
+//            mLoadingIndicator.setVisibility(View.INVISIBLE);
+//
+//            if (imageUrls != null) {
+//                showMovieDataView();
+//                mMoviesAdapter.setMoviesData(imageUrls);
+//            }else
+//                showErrorMessage();
+//        }
+//    }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
+//    @SuppressLint("StaticFieldLeak")
+//    @Override
+//    public Loader<ArrayList<Movie>> onCreateLoader(int i, Bundle bundle) {
+//        return new Loader<ArrayList<Movie>>(this) {
+//
+//            ArrayList<Movie> movies = null;
+//
+//            @Override
+//            protected void onStartLoading() {
+//                if (movies != null) {
+//                    movies = null;
+//                } else {
+//                    mLoadingIndicator.setVisibility(View.VISIBLE);
+//                    forceLoad();
+//                }
+//            }
+//            @Override
+//            public ArrayList<Movie> loadInBackground() {
+//
+//                ArrayList<Movie> mMovies;
+//                mMovies = MoviesDBNetworkUtils.getMovies(POPULAR);
+////                    mMovies = MoviesDBNetworkUtils.getMovies(RATE);
+//
+//                return mMovies;
+//            }
+//
+//
+//
+//
+//        };
+//    }
 
-        @Override
-        protected Movie[] doInBackground(String... params) {
-            if(params.length == 0)
-                showErrorMessage();
+    @SuppressLint("StaticFieldLeak")
+    @NonNull
+    @Override
+    public Loader<ArrayList<Movie>> onCreateLoader(int id, @Nullable Bundle args) {
+        return new AsyncTaskLoader<ArrayList<Movie>>(this){
 
-            Movie[] mMovies;
-            if(params[0].equals(POPULAR))
-                mMovies = MoviesDBNetworkUtils.getMovies(POPULAR);
-            else
-                mMovies = MoviesDBNetworkUtils.getMovies(RATE);
+            ArrayList<Movie> movies = null;
 
-            return mMovies;
-        }
+            @Override
+            protected void onStartLoading() {
+                if (movies != null) {
+                    movies = null;
+                } else {
+                    mLoadingIndicator.setVisibility(View.VISIBLE);
+                    forceLoad();
+                }
+            }
+            @Override
+            public ArrayList<Movie> loadInBackground() {
 
-        @Override
-        protected void onPostExecute(Movie[] imageUrls) {
+                ArrayList<Movie> mMovies;
+                if(movieSort.equals(POPULAR))
+                    mMovies = MoviesDBNetworkUtils.getMovies(POPULAR);
+                else
+                    mMovies = MoviesDBNetworkUtils.getMovies(RATE);
 
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
+                return mMovies;
+            }
+        };
+    }
 
-            if (imageUrls != null) {
-                showMovieDataView();
-                mMoviesAdapter.setMoviesData(imageUrls);
-            }else
-                showErrorMessage();
-        }
+    @Override
+    public void onLoadFinished(@NonNull android.support.v4.content.Loader<ArrayList<Movie>> loader, ArrayList<Movie> movies) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+        if (movies != null) {
+            showMovieDataView();
+            mMoviesAdapter.setMoviesData(movies.toArray(new Movie[0]));
+        }else
+            showErrorMessage();
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull android.support.v4.content.Loader<ArrayList<Movie>> loader) {
+
     }
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {

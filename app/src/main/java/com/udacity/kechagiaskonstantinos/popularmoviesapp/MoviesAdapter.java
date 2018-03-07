@@ -14,6 +14,7 @@ import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 
 import java.io.IOException;
 
+import static android.support.v7.widget.RecyclerView.VERTICAL;
 import static android.support.v7.widget.RecyclerView.ViewHolder;
 
 /**
@@ -50,9 +51,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     @Override
     public void onBindViewHolder(@NonNull final MoviesAdapterViewHolder holder, int position) {
         Movie movie = mMoviesData[position];
-        Picasso.with(context).load(movie.getPosterPath()).into(holder.mMovieImageView);
-
-
+        if(context.getResources().getConfiguration().orientation == VERTICAL)
+            Picasso.with(context).load(movie.getPosterPath()).into(holder.mMovieImageView);
+        else
+            Picasso.with(context).load(movie.getBackdropPath()).into(holder.mMovieImageView);
 
     }
 
@@ -61,6 +63,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         if (null == mMoviesData) return 0;
         return mMoviesData.length;
     }
+
+
 
     public void setMoviesData(Movie[] moviesData) {
         this.mMoviesData = moviesData;
@@ -79,7 +83,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
         @Override
         public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(mMoviesData[getAdapterPosition()]);
+            if (mClickListener != null)
+                mClickListener.onItemClick(mMoviesData[getAdapterPosition()]);
         }
     }
 }

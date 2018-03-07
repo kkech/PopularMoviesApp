@@ -49,7 +49,7 @@ public class DetailActivity extends AppCompatActivity {
                 if(mMovie.getReleaseDate() != null)
                     tvReleaseDateValue.setText(mMovie.getReleaseDate().toString());
                 rbRating.setRating(((Double)(mMovie.getVoteAverage()/2.0)).floatValue());
-                Picasso.with(getApplicationContext()).load(mMovie.getPosterPath()).into(ivPoster);
+                Picasso.with(getApplicationContext()).load(mMovie.getBackdropPath()).into(ivPoster);
             }
         }
     }
