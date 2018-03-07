@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
 
     private void loadMovieData() {
         showMovieDataView();
-        getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
+        getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, MainActivity.this);
 
     }
 
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
             movieSort = POPULAR;
             loadMovieData();
             return true;
-        }else if(id == R.id.sort_rate){
+        } else if (id == R.id.sort_rate) {
             mMoviesAdapter.setMoviesData(null);
             movieSort = RATE;
             loadMovieData();
@@ -148,64 +148,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
 
         return super.onOptionsItemSelected(item);
     }
-
-//    public class FetchMoviesData extends AsyncTask<String, Void, Movie[]> {
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            mLoadingIndicator.setVisibility(View.VISIBLE);
-//        }
-//
-//        @Override
-//        protected Movie[] doInBackground(String... params) {
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Movie[] imageUrls) {
-//
-//            mLoadingIndicator.setVisibility(View.INVISIBLE);
-//
-//            if (imageUrls != null) {
-//                showMovieDataView();
-//                mMoviesAdapter.setMoviesData(imageUrls);
-//            }else
-//                showErrorMessage();
-//        }
-//    }
-
-//    @SuppressLint("StaticFieldLeak")
-//    @Override
-//    public Loader<ArrayList<Movie>> onCreateLoader(int i, Bundle bundle) {
-//        return new Loader<ArrayList<Movie>>(this) {
-//
-//            ArrayList<Movie> movies = null;
-//
-//            @Override
-//            protected void onStartLoading() {
-//                if (movies != null) {
-//                    movies = null;
-//                } else {
-//                    mLoadingIndicator.setVisibility(View.VISIBLE);
-//                    forceLoad();
-//                }
-//            }
-//            @Override
-//            public ArrayList<Movie> loadInBackground() {
-//
-//                ArrayList<Movie> mMovies;
-//                mMovies = MoviesDBNetworkUtils.getMovies(POPULAR);
-////                    mMovies = MoviesDBNetworkUtils.getMovies(RATE);
-//
-//                return mMovies;
-//            }
-//
-//
-//
-//
-//        };
-//    }
 
     @SuppressLint("StaticFieldLeak")
     @NonNull

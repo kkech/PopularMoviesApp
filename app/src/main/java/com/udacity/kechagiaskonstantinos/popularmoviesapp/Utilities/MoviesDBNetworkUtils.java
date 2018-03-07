@@ -1,6 +1,5 @@
 package com.udacity.kechagiaskonstantinos.popularmoviesapp.Utilities;
 
-import android.content.res.Resources;
 import android.net.Uri;
 import android.util.Log;
 
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import static com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity.POPULAR;
-import static com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity.RATE;
 
 /**
  * Created by kechagiaskonstantinos on 26/02/2018.
@@ -92,6 +90,9 @@ public class MoviesDBNetworkUtils {
                 if ((imagesUrls == null) || imagesUrls.length != 2)
                     return null;
             }
+            if(imagePath == null || imagePath.equals("null"))
+                System.out.println("Aaaaaa");
+
             Uri builtUri = Uri.parse(new StringBuffer(imagesUrls[0]).append(imagesUrls[1]).append(imagePath).toString()).buildUpon()
                     .build();
 

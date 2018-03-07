@@ -10,8 +10,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 
-import java.text.SimpleDateFormat;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -49,7 +47,10 @@ public class DetailActivity extends AppCompatActivity {
                 if(mMovie.getReleaseDate() != null)
                     tvReleaseDateValue.setText(mMovie.getReleaseDate().toString());
                 rbRating.setRating(((Double)(mMovie.getVoteAverage()/2.0)).floatValue());
-                Picasso.with(getApplicationContext()).load(mMovie.getBackdropPath()).into(ivPoster);
+                if((mMovie.getBackdropPath() == null) || (mMovie.getBackdropPath().isEmpty()))
+                    Picasso.with(getApplicationContext()).load(mMovie.getPosterPath()).into(ivPoster);
+                else
+                    Picasso.with(getApplicationContext()).load(mMovie.getBackdropPath()).into(ivPoster);
             }
         }
     }
