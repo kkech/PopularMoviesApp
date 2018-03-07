@@ -55,12 +55,12 @@ public class JsonUtils {
             //In the future this can be taken from the configurationResponse
             String size = "w185";
 
-            Log.v(TAG, "Json Parsed");
+            //Log.v(TAG, "Json Parsed");
 
             return new String[]{secureBaseUrl,size};
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e(TAG,"Cannot parse Json");
+            //Log.e(TAG,"Cannot parse Json");
         }
         return null;
     }

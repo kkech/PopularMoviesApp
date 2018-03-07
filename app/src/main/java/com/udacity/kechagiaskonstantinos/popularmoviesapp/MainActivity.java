@@ -100,8 +100,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
 
     @Override
     public void onItemClick(Movie movie) {
-        Log.i(TAG,movie.getMovieId().toString());
-
+        //Log.i(TAG,movie.getMovieId().toString());
         Context context = this;
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);

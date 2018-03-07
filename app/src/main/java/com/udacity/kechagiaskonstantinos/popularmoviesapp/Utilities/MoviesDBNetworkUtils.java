@@ -33,7 +33,6 @@ public class MoviesDBNetworkUtils {
     public static Movie[] getMovies(@MainActivity.MovieSort String movieSort){
         try {
             String movieResponse = getResponseFromHttpUrl(buildMovieUrl(movieSort));
-            System.out.println(movieResponse);
             return JsonUtils.getMoviesFromJSON(movieResponse);
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,8 +71,6 @@ public class MoviesDBNetworkUtils {
 
         try {
             String configurationResponse = getResponseFromHttpUrl(buildConfigurationUrl());
-            System.out.println(configurationResponse);
-
             String[] imagesUrls = JsonUtils.getImagePaths(configurationResponse);
             if((imagesUrls == null) || imagesUrls.length != 2)
                 return null;
@@ -87,8 +84,7 @@ public class MoviesDBNetworkUtils {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            Log.v(TAG, "Built URI for Images " + url);
-
+            //Log.v(TAG, "Built URI for Images " + url);
             return url;
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,8 +103,7 @@ public class MoviesDBNetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Log.v(TAG, "Built URI for configuration" + url);
-
+        //Log.v(TAG, "Built URI for configuration" + url);
         return url;
     }
 

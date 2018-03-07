@@ -43,6 +43,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(R.layout.movie_list_item, viewGroup, false);
+        view.setMinimumHeight(viewGroup.getMeasuredHeight()/2);
         return new MoviesAdapterViewHolder(view);
     }
 
