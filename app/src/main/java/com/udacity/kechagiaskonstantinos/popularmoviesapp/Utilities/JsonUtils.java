@@ -35,6 +35,12 @@ public class JsonUtils {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
+    /**
+     * Get a @{@link String} movieResponse JSON formatted and return an @{@link ArrayList} of @{@link Movie}
+     *
+     * @param moviesResponse
+     * @return @{@link ArrayList} with all movies in moviesResponse @{@link String} JSON.
+     */
     public static ArrayList<Movie> getMoviesFromJSON(String moviesResponse){
         ArrayList<Movie> returnArray = new ArrayList<Movie>();
         try {
@@ -55,12 +61,20 @@ public class JsonUtils {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e(TAG,"Cannot parse Json from movies");
         } catch (ParseException e) {
             e.printStackTrace();
+            Log.e(TAG,"Cannot parse Json from movies");
         }
         return returnArray;
     }
 
+    /**
+     * Get a @{@link String} configurationResponse JSON formatted and return a @{@link String[] } with image API paths.
+     *
+     * @param configurationResponse
+     * @return @{@link String[]}
+     */
     public static String[] getImagePaths(String configurationResponse){
         try {
             JSONObject configurationTotal = new JSONObject(configurationResponse);
@@ -70,7 +84,7 @@ public class JsonUtils {
             return new String[]{secureBaseUrl,IMAGE_SIZE};
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e(TAG,"Cannot parse Json");
+            Log.e(TAG,"Cannot parse Json for images configuration urls");
         }
         return null;
     }

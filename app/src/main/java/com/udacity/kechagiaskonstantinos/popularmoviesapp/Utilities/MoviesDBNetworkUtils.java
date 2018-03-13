@@ -25,7 +25,8 @@ public class MoviesDBNetworkUtils {
 
     private static final String TAG = MoviesDBNetworkUtils.class.getSimpleName();
 
-    private static final String MOVIE_URL = "https://api.themoviedb.org/3/discover/movie";
+    private static final String MOVIE_POPULAR_URL = "https://api.themoviedb.org/3/movie/popular";
+    private static final String MOVIE_TOP_RATED_URL = "https://api.themoviedb.org/3/movie/top_rated";
     private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
     private static final String CONFIGURATION_SUB_URL = "configuration";
 
@@ -33,14 +34,18 @@ public class MoviesDBNetworkUtils {
     private static final String API_KEY = "eb68acebf9644349b99549ab101d948c";
     private static final String LANG_PARAM = "language";
     private static final String ENG_LANG_VALUE = "en-US";
-    private static final String SORT_PARAM = "sort_by";
-    private static final String POPULARITY_SORT_VALUE = "popularity.desc";
-    private static final String RATE_SORT_VALUE = "vote_average.desc";
     private static final String PAGE_PARAM = "page";
     private static final String PAGE_VALUE = "1";
 
     private static String[] imagesUrls = null;
 
+
+    /**
+     * Get a @{@link com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity.MovieSort} option and return the movies.
+     *
+     * @param movieSort
+     * @return @{@link ArrayList} of @{@link Movie}
+     */
     public static ArrayList<Movie> getMovies(@MainActivity.MovieSort String movieSort){
         try {
             String movieResponse = getResponseFromHttpUrl(buildMovieUrl(movieSort));
@@ -52,20 +57,24 @@ public class MoviesDBNetworkUtils {
         return null;
     }
 
+    /**
+     * Get a @{@link com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity.MovieSort} option and return the @{@link URL} with the movies
+     *
+     * @param movieSort
+     * @return @{@link URL} of movies
+     */
     private static URL buildMovieUrl(@MainActivity.MovieSort String movieSort){
         Uri builtUri;
         if(movieSort.equals(POPULAR))
-            builtUri = Uri.parse(MOVIE_URL).buildUpon()
+            builtUri = Uri.parse(MOVIE_POPULAR_URL).buildUpon()
                 .appendQueryParameter(API_PARAM,API_KEY)
                 .appendQueryParameter(LANG_PARAM,ENG_LANG_VALUE)
-                .appendQueryParameter(SORT_PARAM,POPULARITY_SORT_VALUE)
                 .appendQueryParameter(PAGE_PARAM,PAGE_VALUE)
                 .build();
         else
-            builtUri = Uri.parse(MOVIE_URL).buildUpon()
+            builtUri = Uri.parse(MOVIE_TOP_RATED_URL).buildUpon()
                     .appendQueryParameter(API_PARAM,API_KEY)
                     .appendQueryParameter(LANG_PARAM,ENG_LANG_VALUE)
-                    .appendQueryParameter(SORT_PARAM,RATE_SORT_VALUE)
                     .appendQueryParameter(PAGE_PARAM,PAGE_VALUE)
                     .build();
 
@@ -80,20 +89,24 @@ public class MoviesDBNetworkUtils {
         return url;
     }
 
+    /**
+     * Get the imagePath as @{@link String} and return the @{@link URL} of the image.
+     *
+     * @param imagePath
+     * @return @{@link URL} of the image.
+     */
     public static URL buildImageUrl(String imagePath){
 
         try {
-            //To load imageUrls only one time because they not change
+            //To load imageUrls only one time
             if (imagesUrls == null){
                 String configurationResponse = getResponseFromHttpUrl(buildConfigurationUrl());
                 imagesUrls = JsonUtils.getImagePaths(configurationResponse);
                 if ((imagesUrls == null) || imagesUrls.length != 2)
                     return null;
             }
-            if(imagePath == null || imagePath.equals("null"))
-                System.out.println("Aaaaaa");
 
-            Uri builtUri = Uri.parse(new StringBuffer(imagesUrls[0]).append(imagesUrls[1]).append(imagePath).toString()).buildUpon()
+            Uri builtUri = Uri.parse(imagesUrls[0] + imagesUrls[1] + imagePath).buildUpon()
                     .build();
 
             URL url = null;
@@ -101,6 +114,7 @@ public class MoviesDBNetworkUtils {
                 url = new URL(builtUri.toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+                Log.e(TAG,"Unable to build image URL");
             }
             //Log.v(TAG, "Built URI for Images " + url);
             return url;
@@ -111,6 +125,11 @@ public class MoviesDBNetworkUtils {
         return null;
     }
 
+    /**
+     *This method return the configuration @{@link URL}
+     *
+     * @return
+     */
     private static URL buildConfigurationUrl(){
         Uri builtUri = Uri.parse(MOVIE_DB_URL + CONFIGURATION_SUB_URL).buildUpon()
                 .appendQueryParameter(API_PARAM, API_KEY)

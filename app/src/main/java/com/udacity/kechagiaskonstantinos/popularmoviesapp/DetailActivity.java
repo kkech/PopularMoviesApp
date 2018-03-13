@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 
+import java.text.SimpleDateFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -21,6 +23,9 @@ public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
     private Movie mMovie;
+
+    public final String DATE_FORMAT_DETAILS = "EEEE dd MMMM yyyy";
+
 
     @BindView(R.id.tv_title_value) TextView tvTitleValue;
     @BindView(R.id.tv_description_value) TextView tvDescValue;
@@ -44,8 +49,10 @@ public class DetailActivity extends AppCompatActivity {
                 tvTitleValue.setText(mMovie.getTitle());
                 tvDescValue.setText(mMovie.getPlotSynopsis());
 
-                if(mMovie.getReleaseDate() != null)
-                    tvReleaseDateValue.setText(mMovie.getReleaseDate().toString());
+                if(mMovie.getReleaseDate() != null) {
+                    SimpleDateFormat parser = new SimpleDateFormat(DATE_FORMAT_DETAILS);
+                    tvReleaseDateValue.setText(parser.format(mMovie.getReleaseDate()).toString());
+                }
                 rbRating.setRating(((Double)(mMovie.getVoteAverage()/2.0)).floatValue());
                 if((mMovie.getBackdropPath() == null) || (mMovie.getBackdropPath().isEmpty()))
                     Picasso.with(getApplicationContext()).load(mMovie.getPosterPath()).into(ivPoster);

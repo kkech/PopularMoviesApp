@@ -49,13 +49,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
 
     private final int MOVIES_LOADER_ID = 100;
 
-
-
     @StringDef({POPULAR, RATE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MovieSort {
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,6 +193,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
 
     }
 
+    /**
+     * This class is to Decorate the space between GridLayoutManager components
+     */
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         private final int space;
 
