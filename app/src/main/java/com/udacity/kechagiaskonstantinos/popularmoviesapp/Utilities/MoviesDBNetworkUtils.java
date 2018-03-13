@@ -31,7 +31,7 @@ public class MoviesDBNetworkUtils {
     private static final String CONFIGURATION_SUB_URL = "configuration";
 
     private static final String API_PARAM = "api_key";
-    private static final String API_KEY = "eb68acebf9644349b99549ab101d948c";
+    private static final String API_KEY = "YOUR_KEY";
     private static final String LANG_PARAM = "language";
     private static final String ENG_LANG_VALUE = "en-US";
     private static final String PAGE_PARAM = "page";
