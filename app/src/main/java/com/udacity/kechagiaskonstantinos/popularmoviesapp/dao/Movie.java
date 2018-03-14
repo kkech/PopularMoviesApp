@@ -1,5 +1,8 @@
 package com.udacity.kechagiaskonstantinos.popularmoviesapp.dao;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,7 +10,7 @@ import java.util.Date;
  * Created by KechagiasKonstantinos on 05/03/2018.
  */
 
-public class Movie implements Serializable{
+public class Movie implements Parcelable{
 
     private Long movieId;
     private String posterPath;
@@ -28,6 +31,17 @@ public class Movie implements Serializable{
         this.releaseDate = releaseDate;
         this.voteAverage = voteAverage;
         this.plotSynopsis = plotSynopsis;
+    }
+
+    public Movie(Parcel in) {
+        this.movieId = in.readLong();
+        this.posterPath = in.readString();
+        this.backdropPath = in.readString();
+        this.title = in.readString();
+        //Because in parcel we store date in millis.
+        this.releaseDate = new Date(in.readLong());
+        this.voteAverage = in.readDouble();
+        this.plotSynopsis = in.readString();
     }
 
     public Long getMovieId() {
@@ -84,5 +98,31 @@ public class Movie implements Serializable{
 
     public void setPlotSynopsis(String plotSynopsis) {
         this.plotSynopsis = plotSynopsis;
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(this.movieId);
+        parcel.writeString(this.posterPath);
+        parcel.writeString(this.backdropPath);
+        parcel.writeString(this.title);
+        parcel.writeLong(this.releaseDate.getTime());
+        parcel.writeDouble(this.voteAverage);
+        parcel.writeString(this.plotSynopsis);
     }
 }

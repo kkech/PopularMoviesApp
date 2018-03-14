@@ -42,7 +42,7 @@ public class DetailActivity extends AppCompatActivity {
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("Movie")) {
-                mMovie = (Movie)intentThatStartedThisActivity.getSerializableExtra("Movie");
+                mMovie = (Movie)intentThatStartedThisActivity.getParcelableExtra("Movie");
 
                 ButterKnife.bind(this);
 

@@ -52,9 +52,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
             Picasso.with(context).load(movie.getPosterPath()).into(holder.mMovieImageView);
         }else {
             if(movie.getBackdropPath() == null)
-                Picasso.with(context).load(movie.getPosterPath()).into(holder.mMovieImageView);
+                Picasso.with(context).load(movie.getPosterPath())
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_foreground)
+                        .into(holder.mMovieImageView);
             else
-                Picasso.with(context).load(movie.getBackdropPath()).into(holder.mMovieImageView);
+                Picasso.with(context).load(movie.getBackdropPath())
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_foreground)
+                        .into(holder.mMovieImageView);
         }
 
     }

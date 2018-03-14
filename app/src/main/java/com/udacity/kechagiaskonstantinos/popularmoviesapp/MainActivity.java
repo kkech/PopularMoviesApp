@@ -14,6 +14,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
         ButterKnife.bind(this);
 
         GridLayoutManager layoutManager
-                = new GridLayoutManager(this,2);
+                = new GridLayoutManager(this,numberOfColumns());
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -71,6 +72,22 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
         mRecyclerView.setAdapter(mMoviesAdapter);
 
         getSupportLoaderManager().initLoader(MOVIES_LOADER_ID,null,MainActivity.this);
+    }
+
+    /**
+     * This function return the number of the column of Grid Layout Manager
+     *
+     * @return @{@link Integer}
+     */
+    private Integer numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        // You can change this divider to adjust the size of the poster
+        int widthDivider = 400;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) return 2;
+        return nColumns;
     }
 
     private void loadMovieData() {

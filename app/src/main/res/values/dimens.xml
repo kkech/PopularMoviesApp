@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="title_size">24sp</dimen>
+    <dimen name="activity_main_label_margin_top">24dp</dimen>
+    <dimen name="activity_main_value_margin_top">16dp</dimen>
+    <dimen name="activity_main_label_margin_left">32dp</dimen>
+    <dimen name="activity_main_label_margin_left_relative">0dp</dimen>
+    <dimen name="zero_dimen">0dp</dimen>
+
+
 </resources>
