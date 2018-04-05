@@ -7,5 +7,9 @@
     <string name="tv_description_label">Description</string>
     <string name="tv_release_date_label">Release Date</string>
     <string name="tv_rating_label">Rating</string>
+    <string name="tv_trailer_label">Trailer</string>
+    <string name="bt_trailer_content_description">Trailer Button</string>
+
+
 
 </resources>

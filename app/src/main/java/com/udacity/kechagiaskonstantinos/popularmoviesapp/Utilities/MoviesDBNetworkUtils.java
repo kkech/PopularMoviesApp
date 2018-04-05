@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieVideo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,7 @@ public class MoviesDBNetworkUtils {
     private static final String MOVIE_POPULAR_URL = "https://api.themoviedb.org/3/movie/popular";
     private static final String MOVIE_TOP_RATED_URL = "https://api.themoviedb.org/3/movie/top_rated";
     private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
+    private static final String MOVIE_VIDEO_URL = MOVIE_DB_URL + "movie/%s/videos";
     private static final String CONFIGURATION_SUB_URL = "configuration";
 
     private static final String API_PARAM = "api_key";
@@ -39,6 +41,16 @@ public class MoviesDBNetworkUtils {
 
     private static String[] imagesUrls = null;
 
+    public static ArrayList<MovieVideo> getVideos(Long moviedId){
+        try {
+            String movieVideoResponse = getResponseFromHttpUrl(buildMovieVideosUrl(moviedId));
+            return JsonUtils.getMovieVideosFromJSON(movieVideoResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG,"Cannot get fucking movie videos");
+        }
+        return null;
+    }
 
     /**
      * Get a @{@link com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity.MovieSort} option and return the movies.
@@ -52,7 +64,7 @@ public class MoviesDBNetworkUtils {
             return JsonUtils.getMoviesFromJSON(movieResponse);
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e(TAG,"Cannot get movies");
+            Log.e(TAG,"Cannot get fucking movies");
         }
         return null;
     }
@@ -87,6 +99,25 @@ public class MoviesDBNetworkUtils {
             Log.e(TAG,"Unable to build Movie URL");
         }
         return url;
+    }
+
+    public static URL buildMovieVideosUrl(Long moviedId){
+        String videoUrl = String.format(MOVIE_VIDEO_URL, String.valueOf(moviedId));
+        Uri builtUri;
+        builtUri = Uri.parse(videoUrl).buildUpon()
+                .appendQueryParameter(API_PARAM,API_KEY)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.e(TAG,"Unable to build Movie Videos URL");
+        }
+        return url;
+
     }
 
     /**

@@ -38,32 +38,32 @@
             app:srcCompat="@mipmap/ic_launcher" />
 
         <TextView
-            android:id="@+id/tv_descriprion_label"
+            android:id="@+id/tv_description_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_main_label_margin_left"
             android:layout_marginStart="@dimen/activity_main_label_margin_top"
-            android:layout_marginTop="@dimen/activity_main_label_margin_top"
+            android:layout_marginTop="8dp"
             android:text="@string/tv_description_label"
             android:textColor="@color/primaryText"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_poster" />
+            app:layout_constraintTop_toBottomOf="@+id/bt_play_trailer"
+            android:layout_marginLeft="@dimen/activity_main_label_margin_top" />
 
         <TextView
             android:id="@+id/tv_description_value"
             android:layout_width="@dimen/zero_dimen"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="@dimen/activity_main_value_margin_top"
             android:layout_marginTop="@dimen/activity_main_value_margin_top"
             android:textColor="@color/secondaryText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_descriprion_label"
-            app:layout_constraintTop_toBottomOf="@+id/tv_descriprion_label"
-            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultricies lobortis auctor. Maecenas faucibus elit a enim sodales, quis mollis nunc pellentesque." />
+            app:layout_constraintStart_toStartOf="@+id/tv_description_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_description_label"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultricies lobortis auctor. Maecenas faucibus elit a enim sodales, quis mollis nunc pellentesque."
+            android:layout_marginLeft="@dimen/activity_main_value_margin_top"
+            android:layout_marginRight="8dp" />
 
         <TextView
             android:id="@+id/tv_release_date_label"
@@ -73,7 +73,7 @@
             android:text="@string/tv_release_date_label"
             android:textColor="@color/primaryText"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/tv_descriprion_label"
+            app:layout_constraintStart_toStartOf="@+id/tv_description_label"
             app:layout_constraintTop_toBottomOf="@+id/tv_description_value" />
 
         <TextView
@@ -104,14 +104,41 @@
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_main_value_margin_top"
             android:layout_marginTop="@dimen/activity_main_value_margin_top"
             android:isIndicator="true"
             android:numStars="5"
             android:stepSize="0.1"
             app:layout_constraintStart_toStartOf="@+id/tv_rating_label"
             app:layout_constraintTop_toBottomOf="@+id/tv_rating_label"
-            android:layout_marginLeft="@dimen/activity_main_value_margin_top"
-            android:layout_marginStart="@dimen/activity_main_value_margin_top" />
+            android:layout_marginLeft="@dimen/activity_main_value_margin_top" />
+
+        <TextView
+            android:id="@+id/tv_trailer"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical"
+            android:text="@string/tv_trailer_label"
+            android:textColor="@color/primaryText"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/bt_play_trailer"
+            app:layout_constraintStart_toEndOf="@+id/bt_play_trailer"
+            app:layout_constraintTop_toTopOf="@+id/bt_play_trailer"
+            android:layout_marginLeft="16dp" />
+
+        <ImageButton
+            android:id="@+id/bt_play_trailer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorPrimaryLight"
+            android:contentDescription="@string/bt_trailer_content_description"
+            app:layout_constraintStart_toStartOf="@+id/tv_description_label"
+            app:layout_constraintTop_toBottomOf="@+id/iv_poster"
+            app:srcCompat="@drawable/ic_play_circle_filled_black_24px"
+            android:layout_marginLeft="8dp" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

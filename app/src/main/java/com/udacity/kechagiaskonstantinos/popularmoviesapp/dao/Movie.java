@@ -4,7 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by KechagiasKonstantinos on 05/03/2018.
@@ -19,11 +21,12 @@ public class Movie implements Parcelable{
     private Date releaseDate;
     private Double voteAverage;
     private String plotSynopsis;
+    private ArrayList<MovieVideo> videosList;
 
     public Movie() {
     }
 
-    public Movie(Long movieId, String posterPath, String backdropPath, String title, Date releaseDate, Double voteAverage, String plotSynopsis) {
+    public Movie(Long movieId, String posterPath, String backdropPath, String title, Date releaseDate, Double voteAverage, String plotSynopsis, ArrayList<MovieVideo> videosList) {
         this.movieId = movieId;
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
@@ -31,6 +34,7 @@ public class Movie implements Parcelable{
         this.releaseDate = releaseDate;
         this.voteAverage = voteAverage;
         this.plotSynopsis = plotSynopsis;
+        this.videosList = videosList;
     }
 
     public Movie(Parcel in) {
@@ -42,6 +46,7 @@ public class Movie implements Parcelable{
         this.releaseDate = new Date(in.readLong());
         this.voteAverage = in.readDouble();
         this.plotSynopsis = in.readString();
+        this.videosList = in.createTypedArrayList(MovieVideo.CREATOR);
     }
 
     public Long getMovieId() {
@@ -100,6 +105,14 @@ public class Movie implements Parcelable{
         this.plotSynopsis = plotSynopsis;
     }
 
+    public ArrayList<MovieVideo> getVideosList() {
+        return videosList;
+    }
+
+    public void setVideosList(ArrayList<MovieVideo> videosList) {
+        this.videosList = videosList;
+    }
+
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public Movie createFromParcel(Parcel in) {
             return new Movie(in);
@@ -112,7 +125,7 @@ public class Movie implements Parcelable{
 
     @Override
     public int describeContents() {
-        return 0;
+        return this.hashCode();
     }
 
     @Override
@@ -124,5 +137,6 @@ public class Movie implements Parcelable{
         parcel.writeLong(this.releaseDate.getTime());
         parcel.writeDouble(this.voteAverage);
         parcel.writeString(this.plotSynopsis);
+        parcel.writeTypedList(this.videosList);
     }
 }
