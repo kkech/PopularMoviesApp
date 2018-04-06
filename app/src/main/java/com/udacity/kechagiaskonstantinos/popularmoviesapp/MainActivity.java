@@ -45,12 +45,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
     private String movieSort = POPULAR;
     public static final String POPULAR = "Popular";
     public static final String RATE = "Rate";
+    public static final String FAVORITE = "Favorite";
 
     public final Integer GRID_SPACING = 10;
 
     private final int MOVIES_LOADER_ID = 100;
 
-    @StringDef({POPULAR, RATE})
+    @StringDef({POPULAR, RATE, FAVORITE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MovieSort {
     }
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
         /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
         MenuInflater inflater = getMenuInflater();
         /* Use the inflater's inflate method to inflate our menu layout to this menu */
-        inflater.inflate(R.menu.moviesort, menu);
+        inflater.inflate(R.menu.moviesort_menu, menu);
         /* Return true so that the menu is displayed in the Toolbar */
         return true;
     }
@@ -156,6 +157,11 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
         } else if (id == R.id.sort_rate) {
             mMoviesAdapter.setMoviesData(null);
             movieSort = RATE;
+            loadMovieData();
+            return true;
+        } else if (id == R.id.sort_favorite) {
+            mMoviesAdapter.setMoviesData(null);
+            movieSort = FAVORITE;
             loadMovieData();
             return true;
         }
@@ -186,8 +192,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
                 ArrayList<Movie> mMovies;
                 if(movieSort.equals(POPULAR))
                     mMovies = MoviesDBNetworkUtils.getMovies(POPULAR);
-                else
+                else if(movieSort.equals(RATE))
                     mMovies = MoviesDBNetworkUtils.getMovies(RATE);
+                else
+                    mMovies = MoviesDBNetworkUtils.getMovies(POPULAR);
 
                 return mMovies;
             }

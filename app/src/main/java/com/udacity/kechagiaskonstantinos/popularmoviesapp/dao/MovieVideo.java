@@ -11,18 +11,22 @@ public class MovieVideo implements Parcelable {
 
     private String movieKey;
     private String site;
+    private String type;
+
 
     public MovieVideo() {
     }
 
-    public MovieVideo(String movieKey, String site) {
+    public MovieVideo(String movieKey, String site, String type) {
         this.movieKey = movieKey;
         this.site = site;
+        this.type = type;
     }
 
     public MovieVideo(Parcel in) {
         this.movieKey = in.readString();
         this.site = in.readString();
+        this.type = in.readString();
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -51,6 +55,14 @@ public class MovieVideo implements Parcelable {
         this.site = site;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public int describeContents() {
         return this.hashCode();
@@ -60,5 +72,6 @@ public class MovieVideo implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.movieKey);
         parcel.writeString(this.site);
+        parcel.writeString(this.type);
     }
 }

@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
@@ -89,9 +90,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         for(MovieVideo movieVideo : mMovie.getVideosList()){
-            if(movieVideo.getSite().equals(YOUTUBE)){
+            if(movieVideo.getSite().equals(YOUTUBE) && movieVideo.getType().equals("Trailer")){
                 watchYoutubeVideo(this,movieVideo.getMovieKey());
+                return;
             }
         }
+        Toast.makeText(this, "No trailer for this movie",
+                Toast.LENGTH_SHORT).show();
     }
 }

@@ -31,8 +31,7 @@ public class JsonUtils {
     private static final String OVERVIEW_TAG = "overview";
     private static final String KEY = "key";
     private static final String SITE = "site";
-
-
+    private static final String TYPE = "type";
 
     private static final String IMAGES_TAG = "images";
     private static final String IMAGE_SIZE = "w185";
@@ -49,7 +48,7 @@ public class JsonUtils {
             JSONArray resultsArray = moviesTotal.getJSONArray(RESULT_TAG);
             for(int i = 0;i < resultsArray.length();i++){
                 JSONObject resultObject=resultsArray.getJSONObject(i);
-                MovieVideo movieVideo = new MovieVideo(resultObject.optString(KEY),resultObject.optString(SITE));
+                MovieVideo movieVideo = new MovieVideo(resultObject.optString(KEY),resultObject.optString(SITE),resultObject.optString(TYPE));
                 returnArray.add(movieVideo);
             }
         } catch (JSONException e) {
