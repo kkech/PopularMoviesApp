@@ -3,12 +3,18 @@ package com.udacity.kechagiaskonstantinos.popularmoviesapp;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -20,6 +26,7 @@ import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieVideo;
 
 import java.text.SimpleDateFormat;
+import java.util.logging.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +35,7 @@ import butterknife.ButterKnife;
  * Created by KechagiasKonstantinos on 05/03/2018.
  */
 
-public class DetailActivity extends AppCompatActivity implements View.OnClickListener{
+public class DetailActivity extends AppCompatActivity{
 
     private static final String TAG = DetailActivity.class.getSimpleName();
     private Movie mMovie;
@@ -43,6 +50,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @BindView(R.id.iv_poster) ImageView ivPoster;
     @BindView(R.id.rb_rating) RatingBar rbRating;
     @BindView(R.id.bt_play_trailer) ImageButton btPlayTrailer;
+    @BindView(R.id.ctv_isFavorite) CheckedTextView ctvIsFavorite;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,7 +78,18 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 else
                     Picasso.with(getApplicationContext()).load(mMovie.getBackdropPath()).into(ivPoster);
 
-                btPlayTrailer.setOnClickListener(this);
+                btPlayTrailer.setOnClickListener((View view)->this.onClickWatchVideo(view));
+
+                if(mMovie.getFavorite()){
+                    ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_full);
+                    ctvIsFavorite.setChecked(true);
+                    mMovie.setFavorite(true);
+                }else{
+                    ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_outline);
+                    ctvIsFavorite.setChecked(false);
+                    mMovie.setFavorite(false);
+                }
+                ctvIsFavorite.setOnClickListener((View view)->this.onClickFavorite(view));
 
             }
         }
@@ -87,8 +106,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    @Override
-    public void onClick(View view) {
+    public void onClickWatchVideo(View view) {
         for(MovieVideo movieVideo : mMovie.getVideosList()){
             if(movieVideo.getSite().equals(YOUTUBE) && movieVideo.getType().equals("Trailer")){
                 watchYoutubeVideo(this,movieVideo.getMovieKey());
@@ -97,5 +115,18 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }
         Toast.makeText(this, "No trailer for this movie",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClickFavorite(View view){
+        Log.i(TAG,"Favorite checked");
+        if (mMovie.getFavorite()) {
+            ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_outline);
+            ctvIsFavorite.setChecked(false);
+            mMovie.setFavorite(false);
+        }else{
+            ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_full);
+            ctvIsFavorite.setChecked(true);
+            mMovie.setFavorite(true);
+        }
     }
 }

@@ -80,7 +80,7 @@ public class JsonUtils {
                     SimpleDateFormat parser = new SimpleDateFormat(DATE_FORMAT);
                     date = parser.parse(stringDate);
                 }
-                Movie movie = new Movie(resultObject.optLong(ID_TAG), (!(resultObject.optString(POSTER_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(resultObject.optString(POSTER_PATH_TAG)).toString():null, (!(resultObject.optString(BACKDROP_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(resultObject.optString(BACKDROP_PATH_TAG)).toString():null, resultObject.optString(TITLE_TAG), date, resultObject.optDouble(VOTE_AVERAGE_TAG), resultObject.optString(OVERVIEW_TAG), MoviesDBNetworkUtils.getVideos(resultObject.optLong(ID_TAG)));
+                Movie movie = new Movie(resultObject.optLong(ID_TAG), (!(resultObject.optString(POSTER_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(resultObject.optString(POSTER_PATH_TAG)).toString():null, (!(resultObject.optString(BACKDROP_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(resultObject.optString(BACKDROP_PATH_TAG)).toString():null, resultObject.optString(TITLE_TAG), date, resultObject.optDouble(VOTE_AVERAGE_TAG), resultObject.optString(OVERVIEW_TAG), false, MoviesDBNetworkUtils.getVideos(resultObject.optLong(ID_TAG)));
                 returnArray.add(movie);
             }
         } catch (JSONException e) {
