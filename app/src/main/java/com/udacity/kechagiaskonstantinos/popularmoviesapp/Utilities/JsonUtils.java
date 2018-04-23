@@ -3,6 +3,7 @@ package com.udacity.kechagiaskonstantinos.popularmoviesapp.Utilities;
 import android.util.Log;
 
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieReview;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieVideo;
 
 import org.json.JSONArray;
@@ -59,12 +60,31 @@ public class JsonUtils {
         return returnArray;
     }
 
-        /**
-         * Get a @{@link String} movieResponse JSON formatted and return an @{@link ArrayList} of @{@link Movie}
-         *
-         * @param moviesResponse
-         * @return @{@link ArrayList} with all movies in moviesResponse @{@link String} JSON.
-         */
+    public static ArrayList<MovieReview> getMovieReviewsFromJSON(String movieReviewsResponse) {
+        ArrayList<MovieReview> returnArray = new ArrayList<MovieReview>();
+
+        try {
+            JSONObject moviesTotal = new JSONObject(movieReviewsResponse);
+            JSONArray resultsArray = moviesTotal.getJSONArray(RESULT_TAG);
+            for(int i = 0;i < resultsArray.length();i++){
+                JSONObject resultObject=resultsArray.getJSONObject(i);
+                MovieReview movieReview = new MovieReview(resultObject.optString("id"), resultObject.optString("author"), resultObject.optString("content"), resultObject.optString("url"));
+                returnArray.add(movieReview);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e(TAG,"Cannot parse Json from movies");
+        }
+
+        return returnArray;
+    }
+
+    /**
+     * Get a @{@link String} movieResponse JSON formatted and return an @{@link ArrayList} of @{@link Movie}
+     *
+     * @param moviesResponse
+     * @return @{@link ArrayList} with all movies in moviesResponse @{@link String} JSON.
+     */
     public static ArrayList<Movie> getMoviesFromJSON(String moviesResponse){
         ArrayList<Movie> returnArray = new ArrayList<Movie>();
         try {
@@ -80,7 +100,7 @@ public class JsonUtils {
                     SimpleDateFormat parser = new SimpleDateFormat(DATE_FORMAT);
                     date = parser.parse(stringDate);
                 }
-                Movie movie = new Movie(resultObject.optLong(ID_TAG), (!(resultObject.optString(POSTER_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(resultObject.optString(POSTER_PATH_TAG)).toString():null, (!(resultObject.optString(BACKDROP_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(resultObject.optString(BACKDROP_PATH_TAG)).toString():null, resultObject.optString(TITLE_TAG), date, resultObject.optDouble(VOTE_AVERAGE_TAG), resultObject.optString(OVERVIEW_TAG), false, MoviesDBNetworkUtils.getVideos(resultObject.optLong(ID_TAG)));
+                Movie movie = new Movie(resultObject.optLong(ID_TAG), (!(resultObject.optString(POSTER_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(resultObject.optString(POSTER_PATH_TAG)).toString():null, (!(resultObject.optString(BACKDROP_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(resultObject.optString(BACKDROP_PATH_TAG)).toString():null, resultObject.optString(TITLE_TAG), date, resultObject.optDouble(VOTE_AVERAGE_TAG), resultObject.optString(OVERVIEW_TAG), false, MoviesDBNetworkUtils.getVideos(resultObject.optLong(ID_TAG)), MoviesDBNetworkUtils.getReviews(resultObject.optLong(ID_TAG)));
                 returnArray.add(movie);
             }
         } catch (JSONException e) {

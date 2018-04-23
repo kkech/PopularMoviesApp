@@ -23,11 +23,12 @@ public class Movie implements Parcelable{
     private String plotSynopsis;
     private Boolean isFavorite;
     private ArrayList<MovieVideo> videosList;
+    private ArrayList<MovieReview> reviewList;
 
     public Movie() {
     }
 
-    public Movie(Long movieId, String posterPath, String backdropPath, String title, Date releaseDate, Double voteAverage, String plotSynopsis,Boolean isFavorite, ArrayList<MovieVideo> videosList) {
+    public Movie(Long movieId, String posterPath, String backdropPath, String title, Date releaseDate, Double voteAverage, String plotSynopsis,Boolean isFavorite, ArrayList<MovieVideo> videosList, ArrayList<MovieReview> reviewList) {
         this.movieId = movieId;
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
@@ -35,8 +36,9 @@ public class Movie implements Parcelable{
         this.releaseDate = releaseDate;
         this.voteAverage = voteAverage;
         this.plotSynopsis = plotSynopsis;
-        this.videosList = videosList;
         this.isFavorite = isFavorite;
+        this.videosList = videosList;
+        this.reviewList = reviewList;
     }
 
     public Movie(Parcel in) {
@@ -50,6 +52,7 @@ public class Movie implements Parcelable{
         this.plotSynopsis = in.readString();
         this.isFavorite = in.readByte() != 0;
         this.videosList = in.createTypedArrayList(MovieVideo.CREATOR);
+        this.reviewList = in.createTypedArrayList(MovieReview.CREATOR);
     }
 
     public Long getMovieId() {
@@ -108,6 +111,14 @@ public class Movie implements Parcelable{
         this.plotSynopsis = plotSynopsis;
     }
 
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
+
     public ArrayList<MovieVideo> getVideosList() {
         return videosList;
     }
@@ -116,12 +127,12 @@ public class Movie implements Parcelable{
         this.videosList = videosList;
     }
 
-    public Boolean getFavorite() {
-        return isFavorite;
+    public ArrayList<MovieReview> getReviewList() {
+        return reviewList;
     }
 
-    public void setFavorite(Boolean favorite) {
-        isFavorite = favorite;
+    public void setReviewList(ArrayList<MovieReview> reviewList) {
+        this.reviewList = reviewList;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -150,5 +161,6 @@ public class Movie implements Parcelable{
         parcel.writeString(this.plotSynopsis);
         parcel.writeByte((byte) (isFavorite ? 1 : 0));     //if myBoolean == true, byte == 1
         parcel.writeTypedList(this.videosList);
+        parcel.writeTypedList(this.reviewList);
     }
 }

@@ -17,12 +17,14 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieReview;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieVideo;
 
 import java.text.SimpleDateFormat;
@@ -91,6 +93,13 @@ public class DetailActivity extends AppCompatActivity{
                 }
                 ctvIsFavorite.setOnClickListener((View view)->this.onClickFavorite(view));
 
+                LinearLayout ll = (LinearLayout) findViewById(R.id.insideLayout);
+                TextView tv1 = null;
+                for(MovieReview movieReview : mMovie.getReviewList()){
+                    tv1 = new TextView(this);
+                    tv1.setText(movieReview.getAuthor() + " :" + movieReview.getContent() + "\n");
+                    ll.addView(tv1);
+                }
             }
         }
     }
@@ -118,7 +127,6 @@ public class DetailActivity extends AppCompatActivity{
     }
 
     public void onClickFavorite(View view){
-        Log.i(TAG,"Favorite checked");
         if (mMovie.getFavorite()) {
             ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_outline);
             ctvIsFavorite.setChecked(false);

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieReview;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieVideo;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class MoviesDBNetworkUtils {
     private static final String MOVIE_TOP_RATED_URL = "https://api.themoviedb.org/3/movie/top_rated";
     private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
     private static final String MOVIE_VIDEO_URL = MOVIE_DB_URL + "movie/%s/videos";
+    private static final String MOVIE_REVIEW_URL = MOVIE_DB_URL + "movie/%s/reviews";
     private static final String CONFIGURATION_SUB_URL = "configuration";
 
     private static final String API_PARAM = "api_key";
@@ -48,6 +50,17 @@ public class MoviesDBNetworkUtils {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(TAG,"Cannot get fucking movie videos");
+        }
+        return null;
+    }
+
+    public static ArrayList<MovieReview> getReviews(Long moviedId){
+        try {
+            String movieVideoResponse = getResponseFromHttpUrl(buildMovieReviewUrl(moviedId));
+            return JsonUtils.getMovieReviewsFromJSON(movieVideoResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG,"Cannot get fucking movie reviews");
         }
         return null;
     }
@@ -115,6 +128,25 @@ public class MoviesDBNetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             Log.e(TAG,"Unable to build Movie Videos URL");
+        }
+        return url;
+
+    }
+
+    public static URL buildMovieReviewUrl(Long moviedId){
+        String videoUrl = String.format(MOVIE_REVIEW_URL, String.valueOf(moviedId));
+        Uri builtUri;
+        builtUri = Uri.parse(videoUrl).buildUpon()
+                .appendQueryParameter(API_PARAM,API_KEY)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.e(TAG,"Unable to build Movie Review URL");
         }
         return url;
 
