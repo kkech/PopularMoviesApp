@@ -3,6 +3,8 @@ package com.udacity.kechagiaskonstantinos.popularmoviesapp;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +26,8 @@ import android.widget.TextView;
 
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.Utilities.MoviesDBNetworkUtils;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.data.MoviesContract;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.data.MoviesDbHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -191,12 +195,45 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Ite
 
                 ArrayList<Movie> mMovies;
                 if(movieSort.equals(POPULAR))
-                    mMovies = MoviesDBNetworkUtils.getMovies(POPULAR);
+                    mMovies = MoviesDBNetworkUtils.getMovies(POPULAR,getContentResolver());
                 else if(movieSort.equals(RATE))
-                    mMovies = MoviesDBNetworkUtils.getMovies(RATE);
-                else
-                    mMovies = MoviesDBNetworkUtils.getMovies(POPULAR);
+                    mMovies = MoviesDBNetworkUtils.getMovies(RATE,getContentResolver());
+                else{
+//                    final SQLiteDatabase db = new MoviesDbHelper(getContext()).getReadableDatabase();
+//
+//                    // Write URI match code and set a variable to return a Cursor
+//                    Cursor retCursor;
+//
+//                    String query = "SELECT * FROM " + MoviesContract.FavoriteMoviesEntry.TABLE_NAME;
+//
+//                    retCursor =  db.rawQuery(query,null);
+//
+//                    retCursor.moveToFirst();
+//                    while(retCursor.moveToNext()){
+//                        System.out.println(retCursor.getString(0) + " + " + retCursor.getString(1));
+//                    }
+//                    retCursor.close();
 
+
+                    ArrayList<Movie> movieArrayList = new ArrayList<Movie>();
+                    ///
+                    Cursor c = getContentResolver().query(MoviesContract.FavoriteMoviesEntry.CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID);
+                    ///
+                    if(c.getCount() > 0) {
+                        c.moveToFirst();
+                        do {
+                            movieArrayList.add(new Movie(c.getLong(0)));
+                            System.out.println(c.getString(0) + " + " + c.getString(1));
+
+                        } while (c.moveToNext());
+                    }
+
+                    mMovies = MoviesDBNetworkUtils.getMoviesFromMovieList(movieArrayList);
+                }
                 return mMovies;
             }
         };

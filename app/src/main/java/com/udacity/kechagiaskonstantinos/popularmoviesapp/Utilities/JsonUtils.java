@@ -40,6 +40,36 @@ public class JsonUtils {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
+    public static ArrayList<Movie> getMoviesFromMoviesJsonArray(ArrayList<String> movieJsonArrayList){
+        ArrayList<Movie> returnArray = new ArrayList<Movie>();
+        for(String movieJson : movieJsonArrayList){
+            JSONObject movieTotal = null;
+            try {
+                movieTotal = new JSONObject(movieJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            String stringDate = movieTotal.optString(RELEASE_DATE_TAG);
+            Date date = null;
+            if(stringDate.isEmpty()){
+                date = null;
+            }else {
+                SimpleDateFormat parser = new SimpleDateFormat(DATE_FORMAT);
+                try {
+                    date = parser.parse(stringDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            Movie movie = new Movie(movieTotal.optLong(ID_TAG), (!(movieTotal.optString(POSTER_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(movieTotal.optString(POSTER_PATH_TAG)).toString():null, (!(movieTotal.optString(BACKDROP_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(movieTotal.optString(BACKDROP_PATH_TAG)).toString():null, movieTotal.optString(TITLE_TAG), date, movieTotal.optDouble(VOTE_AVERAGE_TAG), movieTotal.optString(OVERVIEW_TAG), false, MoviesDBNetworkUtils.getVideos(movieTotal.optLong(ID_TAG)), MoviesDBNetworkUtils.getReviews(movieTotal.optLong(ID_TAG)));
+            returnArray.add(movie);
+        }
+
+
+        return returnArray;
+    }
 
     public static ArrayList<MovieVideo> getMovieVideosFromJSON(String movieVideosResponse) {
         ArrayList<MovieVideo> returnArray = new ArrayList<MovieVideo>();

@@ -1,5 +1,7 @@
 package com.udacity.kechagiaskonstantinos.popularmoviesapp.Utilities;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.net.Uri;
 import android.util.Log;
 
@@ -7,6 +9,7 @@ import com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieReview;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieVideo;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.data.MoviesContract;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +33,7 @@ public class MoviesDBNetworkUtils {
     private static final String MOVIE_POPULAR_URL = "https://api.themoviedb.org/3/movie/popular";
     private static final String MOVIE_TOP_RATED_URL = "https://api.themoviedb.org/3/movie/top_rated";
     private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
+    private static final String SINGLE_MOVIE_DB_URL = MOVIE_DB_URL + "movie/%s";
     private static final String MOVIE_VIDEO_URL = MOVIE_DB_URL + "movie/%s/videos";
     private static final String MOVIE_REVIEW_URL = MOVIE_DB_URL + "movie/%s/reviews";
     private static final String CONFIGURATION_SUB_URL = "configuration";
@@ -71,15 +75,37 @@ public class MoviesDBNetworkUtils {
      * @param movieSort
      * @return @{@link ArrayList} of @{@link Movie}
      */
-    public static ArrayList<Movie> getMovies(@MainActivity.MovieSort String movieSort){
+    public static ArrayList<Movie> getMovies(@MainActivity.MovieSort String movieSort, ContentResolver contentResolver){
         try {
             String movieResponse = getResponseFromHttpUrl(buildMovieUrl(movieSort));
+//            ArrayList<Movie> movieArrayList = JsonUtils.getMoviesFromJSON(movieResponse);
+//            for(Movie movie : movieArrayList){
+//                ContentValues contentValues = new ContentValues();
+//                // Put the task description and selected mPriority into the ContentValues
+//                contentValues.put(MoviesContract.MovieEntry.COLUMN_MOVIE_ID, movie.getMovieId());
+//                contentValues.put(MoviesContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
+//                // Insert the content values via a ContentResolver
+//                Uri uri = contentResolver.insert(MoviesContract.MovieEntry.CONTENT_URI, contentValues);
+//            }
             return JsonUtils.getMoviesFromJSON(movieResponse);
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(TAG,"Cannot get fucking movies");
         }
         return null;
+    }
+
+    public static ArrayList<Movie> getMoviesFromMovieList(ArrayList<Movie> movieArrayList){
+        ArrayList<String> jsonList = new ArrayList<String>();
+        for(Movie movie : movieArrayList){
+            try {
+                jsonList.add(getResponseFromHttpUrl(buildSingleMovieUrl(movie.getMovieId())));
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG,"Cannot get fucking movie : " + movie.getMovieId());
+            }
+        }
+        return JsonUtils.getMoviesFromMoviesJsonArray(jsonList);
     }
 
     /**
@@ -114,8 +140,26 @@ public class MoviesDBNetworkUtils {
         return url;
     }
 
-    public static URL buildMovieVideosUrl(Long moviedId){
-        String videoUrl = String.format(MOVIE_VIDEO_URL, String.valueOf(moviedId));
+    private static URL buildSingleMovieUrl(Long movieId){
+        String videoUrl = String.format(SINGLE_MOVIE_DB_URL, String.valueOf(movieId));
+        Uri builtUri;
+        builtUri = Uri.parse(videoUrl).buildUpon()
+                .appendQueryParameter(API_PARAM,API_KEY)
+                .build();
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.e(TAG,"Unable to build single movie URL");
+        }
+        return url;
+
+    }
+
+    public static URL buildMovieVideosUrl(Long movieId){
+        String videoUrl = String.format(MOVIE_VIDEO_URL, String.valueOf(movieId));
         Uri builtUri;
         builtUri = Uri.parse(videoUrl).buildUpon()
                 .appendQueryParameter(API_PARAM,API_KEY)

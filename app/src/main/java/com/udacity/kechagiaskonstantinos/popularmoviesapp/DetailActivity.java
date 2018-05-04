@@ -1,9 +1,11 @@
 package com.udacity.kechagiaskonstantinos.popularmoviesapp;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -26,6 +28,7 @@ import com.squareup.picasso.Picasso;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieReview;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieVideo;
+import com.udacity.kechagiaskonstantinos.popularmoviesapp.data.MoviesContract;
 
 import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
@@ -82,14 +85,25 @@ public class DetailActivity extends AppCompatActivity{
 
                 btPlayTrailer.setOnClickListener((View view)->this.onClickWatchVideo(view));
 
-                if(mMovie.getFavorite()){
+                Cursor c = getContentResolver().query(MoviesContract.FavoriteMoviesEntry.CONTENT_URI,
+                        null,
+                        MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID + "=?",
+                        new String[] {mMovie.getMovieId().toString()},
+                        MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID);
+                if(c.getCount() > 0) {
+                    c.moveToFirst();
+                    do {
+                        System.out.println(c.getString(0) + " + " + c.getString(1));
+
+                    } while (c.moveToNext());
+                }
+
+                if(c.getCount() > 0){
                     ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_full);
                     ctvIsFavorite.setChecked(true);
-                    mMovie.setFavorite(true);
                 }else{
                     ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_outline);
                     ctvIsFavorite.setChecked(false);
-                    mMovie.setFavorite(false);
                 }
                 ctvIsFavorite.setOnClickListener((View view)->this.onClickFavorite(view));
 
@@ -127,14 +141,39 @@ public class DetailActivity extends AppCompatActivity{
     }
 
     public void onClickFavorite(View view){
-        if (mMovie.getFavorite()) {
+        Cursor c = getContentResolver().query(MoviesContract.FavoriteMoviesEntry.CONTENT_URI,
+                null,
+                MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID + "=?",
+                new String[] {mMovie.getMovieId().toString()},
+                MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID);
+
+        if(c.getCount() > 0) {
+            c.moveToFirst();
+            do {
+                System.out.println(c.getString(0) + " + " + c.getString(1));
+
+            } while (c.moveToNext());
+        }
+
+        if (c.getCount() > 0) {
             ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_outline);
             ctvIsFavorite.setChecked(false);
-            mMovie.setFavorite(false);
+            Uri uri = MoviesContract.FavoriteMoviesEntry.CONTENT_URI;
+            uri = uri.buildUpon().appendPath(mMovie.getMovieId().toString()).build();
+            //Delete a single row of data using a ContentResolver
+            getContentResolver().delete(uri, null, null);
+
         }else{
             ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_full);
             ctvIsFavorite.setChecked(true);
-            mMovie.setFavorite(true);
+
+            ContentValues contentValues = new ContentValues();
+            // Put the task description and selected mPriority into the ContentValues
+            contentValues.put(MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID, mMovie.getMovieId());
+            contentValues.put(MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_TITLE, mMovie.getTitle());
+            // Insert the content values via a ContentResolver
+            Uri uri = getContentResolver().insert(MoviesContract.FavoriteMoviesEntry.CONTENT_URI, contentValues);
+
         }
     }
 }

@@ -27,6 +27,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        
+        <provider
+            android:authorities="com.udacity.kechagiaskonstantinos.popularmoviesapp"
+            android:name="com.udacity.kechagiaskonstantinos.popularmoviesapp.data.MoviesContentProvider"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

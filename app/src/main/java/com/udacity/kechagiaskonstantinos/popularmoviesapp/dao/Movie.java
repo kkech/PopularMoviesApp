@@ -28,7 +28,11 @@ public class Movie implements Parcelable{
     public Movie() {
     }
 
-    public Movie(Long movieId, String posterPath, String backdropPath, String title, Date releaseDate, Double voteAverage, String plotSynopsis,Boolean isFavorite, ArrayList<MovieVideo> videosList, ArrayList<MovieReview> reviewList) {
+    public Movie(Long movieId) {
+        this.movieId = movieId;
+    }
+
+    public Movie(Long movieId, String posterPath, String backdropPath, String title, Date releaseDate, Double voteAverage, String plotSynopsis, Boolean isFavorite, ArrayList<MovieVideo> videosList, ArrayList<MovieReview> reviewList) {
         this.movieId = movieId;
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
@@ -111,9 +115,9 @@ public class Movie implements Parcelable{
         this.plotSynopsis = plotSynopsis;
     }
 
-    public Boolean getFavorite() {
-        return isFavorite;
-    }
+//    public Boolean getFavorite() {
+//        return isFavorite;
+//    }
 
     public void setFavorite(Boolean favorite) {
         isFavorite = favorite;
