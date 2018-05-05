@@ -13,7 +13,6 @@ public class MovieVideo implements Parcelable {
     private String site;
     private String type;
 
-
     public MovieVideo() {
     }
 

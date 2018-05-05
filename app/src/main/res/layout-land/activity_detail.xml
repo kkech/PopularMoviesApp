@@ -40,15 +40,16 @@
         <TextView
             android:id="@+id/tv_description_label"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="16dp"
             android:layout_marginLeft="32dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:text="@string/tv_description_label"
             android:textColor="@color/primaryText"
             android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/tv_trailer"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_poster" />
+            tools:layout_editor_absoluteY="329dp" />
 
         <TextView
             android:id="@+id/tv_description_value"
@@ -114,6 +115,76 @@
             android:stepSize="0.1"
             app:layout_constraintStart_toStartOf="@+id/tv_rating_label"
             app:layout_constraintTop_toBottomOf="@+id/tv_rating_label" />
+
+        <TextView
+            android:id="@+id/tv_trailer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/tv_trailer_label"
+            android:textColor="@color/primaryText"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/bt_play_trailer"
+            app:layout_constraintTop_toTopOf="@+id/bt_play_trailer" />
+
+        <ImageButton
+            android:id="@+id/bt_play_trailer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorPrimaryLight"
+            android:contentDescription="@string/bt_trailer_content_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_poster"
+            app:srcCompat="@drawable/ic_play_circle_filled_black_24px" />
+
+        <CheckedTextView
+            android:id="@+id/ctv_isFavorite"
+            android:layout_width="36dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:checkMark="@drawable/ic_heart_outline"
+            android:checked="false"
+            android:gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_trailer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_trailer"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/tv_reviews_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/tv_reviews_label"
+            android:textColor="@color/primaryText"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_rating_label"
+            app:layout_constraintTop_toBottomOf="@+id/rb_rating" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="16dp"
+            android:fillViewport="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/rb_rating"
+            app:layout_constraintTop_toBottomOf="@+id/tv_reviews_label">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/insideLayout"
+                />
+        </android.support.v4.widget.NestedScrollView>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

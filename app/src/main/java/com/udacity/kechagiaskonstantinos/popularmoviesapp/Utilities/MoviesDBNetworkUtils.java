@@ -1,7 +1,6 @@
 package com.udacity.kechagiaskonstantinos.popularmoviesapp.Utilities;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.net.Uri;
 import android.util.Log;
 
@@ -9,7 +8,6 @@ import com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.Movie;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieReview;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieVideo;
-import com.udacity.kechagiaskonstantinos.popularmoviesapp.data.MoviesContract;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +24,6 @@ import static com.udacity.kechagiaskonstantinos.popularmoviesapp.MainActivity.PO
  */
 
 public class MoviesDBNetworkUtils {
-
-
     private static final String TAG = MoviesDBNetworkUtils.class.getSimpleName();
 
     private static final String MOVIE_POPULAR_URL = "https://api.themoviedb.org/3/movie/popular";
@@ -47,6 +43,12 @@ public class MoviesDBNetworkUtils {
 
     private static String[] imagesUrls = null;
 
+    /**
+     * Get the id of the movie and return an @{@link ArrayList} of @{@link MovieVideo}
+     *
+     * @param moviedId
+     * @return @{@link ArrayList} of @{@link MovieVideo}
+     */
     public static ArrayList<MovieVideo> getVideos(Long moviedId){
         try {
             String movieVideoResponse = getResponseFromHttpUrl(buildMovieVideosUrl(moviedId));
@@ -58,6 +60,13 @@ public class MoviesDBNetworkUtils {
         return null;
     }
 
+    /**
+     *
+     * Get the id of the movie and return an @{@link ArrayList} of @{@link MovieReview}
+     *
+     * @param moviedId
+     * @return @{@link ArrayList} of @{@link MovieReview}
+     */
     public static ArrayList<MovieReview> getReviews(Long moviedId){
         try {
             String movieVideoResponse = getResponseFromHttpUrl(buildMovieReviewUrl(moviedId));
@@ -78,15 +87,6 @@ public class MoviesDBNetworkUtils {
     public static ArrayList<Movie> getMovies(@MainActivity.MovieSort String movieSort, ContentResolver contentResolver){
         try {
             String movieResponse = getResponseFromHttpUrl(buildMovieUrl(movieSort));
-//            ArrayList<Movie> movieArrayList = JsonUtils.getMoviesFromJSON(movieResponse);
-//            for(Movie movie : movieArrayList){
-//                ContentValues contentValues = new ContentValues();
-//                // Put the task description and selected mPriority into the ContentValues
-//                contentValues.put(MoviesContract.MovieEntry.COLUMN_MOVIE_ID, movie.getMovieId());
-//                contentValues.put(MoviesContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
-//                // Insert the content values via a ContentResolver
-//                Uri uri = contentResolver.insert(MoviesContract.MovieEntry.CONTENT_URI, contentValues);
-//            }
             return JsonUtils.getMoviesFromJSON(movieResponse);
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,6 +95,13 @@ public class MoviesDBNetworkUtils {
         return null;
     }
 
+    /**
+     *
+     * Get Movie details for all Movies in the @{@link ArrayList} of @{@link Movie}
+     *
+     * @param movieArrayList
+     * @return @{@link ArrayList} of @{@link Movie}
+     */
     public static ArrayList<Movie> getMoviesFromMovieList(ArrayList<Movie> movieArrayList){
         ArrayList<String> jsonList = new ArrayList<String>();
         for(Movie movie : movieArrayList){
@@ -140,6 +147,12 @@ public class MoviesDBNetworkUtils {
         return url;
     }
 
+    /**
+     * Get movie id and generate the @{@link URL} for the movie details
+     *
+     * @param movieId
+     * @return @{@link URL}
+     */
     private static URL buildSingleMovieUrl(Long movieId){
         String videoUrl = String.format(SINGLE_MOVIE_DB_URL, String.valueOf(movieId));
         Uri builtUri;
@@ -155,10 +168,15 @@ public class MoviesDBNetworkUtils {
             Log.e(TAG,"Unable to build single movie URL");
         }
         return url;
-
     }
 
-    public static URL buildMovieVideosUrl(Long movieId){
+    /**
+     * Get movie id and generate the @{@link URL} for the movie videos
+     *
+     * @param movieId
+     * @return @{@link URL}
+     */
+    private static URL buildMovieVideosUrl(Long movieId){
         String videoUrl = String.format(MOVIE_VIDEO_URL, String.valueOf(movieId));
         Uri builtUri;
         builtUri = Uri.parse(videoUrl).buildUpon()
@@ -166,7 +184,6 @@ public class MoviesDBNetworkUtils {
                 .build();
 
         URL url = null;
-
         try {
             url = new URL(builtUri.toString());
         } catch (MalformedURLException e) {
@@ -174,18 +191,22 @@ public class MoviesDBNetworkUtils {
             Log.e(TAG,"Unable to build Movie Videos URL");
         }
         return url;
-
     }
 
-    public static URL buildMovieReviewUrl(Long moviedId){
-        String videoUrl = String.format(MOVIE_REVIEW_URL, String.valueOf(moviedId));
+    /**
+     * Get movie id and generate the @{@link URL} for the movie reviews
+     *
+     * @param movieId
+     * @return @{@link URL}
+     */
+    private static URL buildMovieReviewUrl(Long movieId){
+        String videoUrl = String.format(MOVIE_REVIEW_URL, String.valueOf(movieId));
         Uri builtUri;
         builtUri = Uri.parse(videoUrl).buildUpon()
                 .appendQueryParameter(API_PARAM,API_KEY)
                 .build();
 
         URL url = null;
-
         try {
             url = new URL(builtUri.toString());
         } catch (MalformedURLException e) {
@@ -193,7 +214,6 @@ public class MoviesDBNetworkUtils {
             Log.e(TAG,"Unable to build Movie Review URL");
         }
         return url;
-
     }
 
     /**
@@ -203,7 +223,6 @@ public class MoviesDBNetworkUtils {
      * @return @{@link URL} of the image.
      */
     public static URL buildImageUrl(String imagePath){
-
         try {
             //To load imageUrls only one time
             if (imagesUrls == null){

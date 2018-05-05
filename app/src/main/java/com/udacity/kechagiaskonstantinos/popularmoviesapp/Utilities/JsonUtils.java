@@ -40,6 +40,12 @@ public class JsonUtils {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
+    /**
+     * Get a @{@link ArrayList} of @{@link String} with movies JSON formatted and return an @{@link ArrayList} of @{@link Movie}
+     *
+     * @param movieJsonArrayList
+     * @return @{@link ArrayList} of @{@link MovieVideo}
+     */
     public static ArrayList<Movie> getMoviesFromMoviesJsonArray(ArrayList<String> movieJsonArrayList){
         ArrayList<Movie> returnArray = new ArrayList<Movie>();
         for(String movieJson : movieJsonArrayList){
@@ -48,8 +54,9 @@ public class JsonUtils {
                 movieTotal = new JSONObject(movieJson);
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e(TAG,"Cannot Parse Json From Movies");
+                return null;
             }
-
 
             String stringDate = movieTotal.optString(RELEASE_DATE_TAG);
             Date date = null;
@@ -66,11 +73,15 @@ public class JsonUtils {
             Movie movie = new Movie(movieTotal.optLong(ID_TAG), (!(movieTotal.optString(POSTER_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(movieTotal.optString(POSTER_PATH_TAG)).toString():null, (!(movieTotal.optString(BACKDROP_PATH_TAG).equals("null")))?MoviesDBNetworkUtils.buildImageUrl(movieTotal.optString(BACKDROP_PATH_TAG)).toString():null, movieTotal.optString(TITLE_TAG), date, movieTotal.optDouble(VOTE_AVERAGE_TAG), movieTotal.optString(OVERVIEW_TAG), false, MoviesDBNetworkUtils.getVideos(movieTotal.optLong(ID_TAG)), MoviesDBNetworkUtils.getReviews(movieTotal.optLong(ID_TAG)));
             returnArray.add(movie);
         }
-
-
         return returnArray;
     }
 
+    /**
+     * Get a @{@link String} movieResponse JSON formatted and return an @{@link ArrayList} of @{@link MovieVideo}
+     *
+     * @param movieVideosResponse
+     * @return @{@link ArrayList} of @{@link MovieVideo}
+     */
     public static ArrayList<MovieVideo> getMovieVideosFromJSON(String movieVideosResponse) {
         ArrayList<MovieVideo> returnArray = new ArrayList<MovieVideo>();
 
@@ -86,10 +97,15 @@ public class JsonUtils {
             e.printStackTrace();
             Log.e(TAG,"Cannot parse Json from movies");
         }
-
         return returnArray;
     }
 
+    /**
+     * Get a @{@link String} movieResponse JSON formatted and return an @{@link ArrayList} of @{@link MovieReview}
+     *
+     * @param movieReviewsResponse
+     * @return @{@link ArrayList} of @{@link MovieReview}
+     */
     public static ArrayList<MovieReview> getMovieReviewsFromJSON(String movieReviewsResponse) {
         ArrayList<MovieReview> returnArray = new ArrayList<MovieReview>();
 
@@ -105,7 +121,6 @@ public class JsonUtils {
             e.printStackTrace();
             Log.e(TAG,"Cannot parse Json from movies");
         }
-
         return returnArray;
     }
 

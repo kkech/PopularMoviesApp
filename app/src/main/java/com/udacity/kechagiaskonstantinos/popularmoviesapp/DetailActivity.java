@@ -4,18 +4,12 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,7 +25,6 @@ import com.udacity.kechagiaskonstantinos.popularmoviesapp.dao.MovieVideo;
 import com.udacity.kechagiaskonstantinos.popularmoviesapp.data.MoviesContract;
 
 import java.text.SimpleDateFormat;
-import java.util.logging.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,14 +83,10 @@ public class DetailActivity extends AppCompatActivity{
                         MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID + "=?",
                         new String[] {mMovie.getMovieId().toString()},
                         MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID);
-                if(c.getCount() > 0) {
-                    c.moveToFirst();
-                    do {
-                        System.out.println(c.getString(0) + " + " + c.getString(1));
-
-                    } while (c.moveToNext());
+                if(c == null){
+                    Log.e(TAG,"Cursor is null");
+                    return;
                 }
-
                 if(c.getCount() > 0){
                     ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_full);
                     ctvIsFavorite.setChecked(true);
@@ -106,6 +95,7 @@ public class DetailActivity extends AppCompatActivity{
                     ctvIsFavorite.setChecked(false);
                 }
                 ctvIsFavorite.setOnClickListener((View view)->this.onClickFavorite(view));
+                c.close();
 
                 LinearLayout ll = (LinearLayout) findViewById(R.id.insideLayout);
                 TextView tv1 = null;
@@ -146,15 +136,10 @@ public class DetailActivity extends AppCompatActivity{
                 MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID + "=?",
                 new String[] {mMovie.getMovieId().toString()},
                 MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_ID);
-
-        if(c.getCount() > 0) {
-            c.moveToFirst();
-            do {
-                System.out.println(c.getString(0) + " + " + c.getString(1));
-
-            } while (c.moveToNext());
+        if(c == null) {
+            Log.e(TAG, "Cursor is null");
+            return;
         }
-
         if (c.getCount() > 0) {
             ctvIsFavorite.setCheckMarkDrawable(R.drawable.ic_heart_outline);
             ctvIsFavorite.setChecked(false);
@@ -173,7 +158,7 @@ public class DetailActivity extends AppCompatActivity{
             contentValues.put(MoviesContract.FavoriteMoviesEntry.COLUMN_FAVORITE_MOVIE_TITLE, mMovie.getTitle());
             // Insert the content values via a ContentResolver
             Uri uri = getContentResolver().insert(MoviesContract.FavoriteMoviesEntry.CONTENT_URI, contentValues);
-
         }
+        c.close();
     }
 }

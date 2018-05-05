@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class MoviesContentProvider extends ContentProvider{
 
@@ -43,7 +42,6 @@ public class MoviesContentProvider extends ContentProvider{
     }
 
     private MoviesDbHelper mTaskDbHelper;
-
 
     @Override
     public boolean onCreate() {
@@ -158,14 +156,12 @@ public class MoviesContentProvider extends ContentProvider{
         return tasksDeleted;
     }
 
-
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }
-
 
     @Override
     public String getType(@NonNull Uri uri) {
